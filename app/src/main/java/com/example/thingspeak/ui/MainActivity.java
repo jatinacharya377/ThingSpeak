@@ -5,9 +5,11 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -16,8 +18,10 @@ import com.example.thingspeak.viewmodel.ThingSpeakViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button refreshButton;
     private FeedsAdapter adapter;
     private ProgressBar loadingProgressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private SwitchCompat createFeedSwitch;
     private ThingSpeakViewModel viewModel;
 
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             if (isSuccess) {
 
                 showToast("Feed created successfully!");
+                updateTheFeeds();
 
             } else {
 
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         feedsRecyclerView.setAdapter(adapter);
         feedsRecyclerView.setHasFixedSize(true);
         feedsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        refreshButton = findViewById(R.id.refreshButton);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         viewModel = new ViewModelProvider(this).get(ThingSpeakViewModel.class);
         viewModel.init();
     }
@@ -58,6 +65,17 @@ public class MainActivity extends AppCompatActivity {
                 message,
                 Toast.LENGTH_SHORT
         ).show();
+    }
+
+    private void updateTheFeeds() {
+
+        viewModel.getFeeds(getString(R.string.api_key), 2).observe(this, feedsList -> {
+
+            adapter.updateTheAdapter(feedsList);
+            createFeedSwitch.setVisibility(View.VISIBLE);
+            loadingProgressBar.setVisibility(View.GONE);
+            refreshButton.setVisibility(View.VISIBLE);
+        });
     }
 
     @Override
@@ -79,11 +97,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        viewModel.getFeeds(getString(R.string.api_key), 3).observe(this, feedsList -> {
+        refreshButton.setOnClickListener(v -> updateTheFeeds());
+        swipeRefreshLayout.setOnRefreshListener(() -> {
 
-            adapter.updateTheAdapter(feedsList);
-            createFeedSwitch.setVisibility(View.VISIBLE);
-            loadingProgressBar.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+            updateTheFeeds();
         });
+        updateTheFeeds();
     }
 }
