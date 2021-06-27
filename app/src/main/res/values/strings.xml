@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">ThingSpeak</string>
+    <string name="app_name">LED Application</string>
     <string name="welcome_text">Hi,\nWelcome to our App!</string>
     <string name="api_key" tools:ignore="Typos">HHLP1ZFWLTTY2QKH</string>
     <string name="api_key_2" tools:ignore="Typos">412GWYCW5D561OR7</string>
-    <string name="create_new_feed">LED ON or OFF (0/1)</string>
+    <string name="create_new_feed">LED OFF or ON (0/1)</string>
     <string name="refresh">Refresh</string>
+    <string name="led_turned_on_msg">LED turned on successfully!</string>
+    <string name="led_turned_off_msg">LED turned off successfully!</string>
 </resources>

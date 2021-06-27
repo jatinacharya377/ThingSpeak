@@ -31,7 +31,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (isSuccess) {
 
-                showToast("Feed created successfully!");
+                if (toggleState == 1) {
+
+                    showToast(getString(R.string.led_turned_on_msg));
+
+                } else {
+
+                    showToast(getString(R.string.led_turned_off_msg));
+
+                }
+
                 updateTheFeeds();
 
             } else {
